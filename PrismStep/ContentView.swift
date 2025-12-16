@@ -11,15 +11,15 @@ import RealityKit
 struct ContentView : View {
 
     //歩数の箱
-        @State var crrentSteps: Int = 8
+        @State var currentSteps: Int = 8
     
     var body: some View {
         
         VStack {
                 Spacer()//レイアウト調整
-                GlassDropView(stepCount: crrentSteps)//雫を呼び出して表示
+                GlassDropView(stepCount: currentSteps)//雫を呼び出して表示
                 Spacer()
-                Text("現在の歩数: \(crrentSteps) 歩")
+                Text("現在の歩数: \(currentSteps) 歩")
         }
         
         RealityView { content in
