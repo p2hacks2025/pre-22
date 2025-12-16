@@ -8,6 +8,26 @@
 import SwiftUI
 
 struct GlassDropView: View {
+    
+    var stepCount: Int//歩数を受け取る
+    
+    // 歩数に応じて、3段階のサイズを決める
+        var dropSize: CGFloat {//CGFloat:座標やサイズを表す時に使う専用の実数型
+            switch stepCount {
+            case 0..<4000:
+                // 0歩 〜 3999歩（小）
+                return 120
+                
+            case 4000..<8000:
+                // 4000歩 〜 7999歩（中）
+                return 220
+                
+            default:
+                // 8000歩以上（大）
+                return 320
+            }
+        }
+    
     var body: some View {
         ZStack{
             Circle()
@@ -21,13 +41,28 @@ struct GlassDropView: View {
                 .shadow(color:.white.opacity(0.8),radius:10)//全体の発光
             
         }
-        .frame(width:250,height:250)
+        .frame(width:dropSize,height:dropSize)
+
     }
 }
 
 #Preview {
-    ZStack{
-        Color.black//背景黒
-        GlassDropView()
+    VStack(spacing:40){
+        GlassDropView(stepCount: 500)   // 小
+        GlassDropView(stepCount: 4500)  // 中
+        GlassDropView(stepCount: 9000)  // 大
     }
+    .padding()
+    
+    //横幅と高さを画面いっぱいに広げる
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    
+    //背景色を指定
+    .background(
+            LinearGradient(
+                colors: [Color.blue.opacity(0.3), Color.cyan.opacity(0.8)], // 薄い青〜水色
+                startPoint: .topLeading,    // 左上から
+                endPoint: .bottomTrailing   // 右下へ
+            )
+        )
 }
