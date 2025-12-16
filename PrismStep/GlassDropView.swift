@@ -53,5 +53,16 @@ struct GlassDropView: View {
         GlassDropView(stepCount: 9000)  // 大
     }
     .padding()
-    .background(Color.black)
+    
+    //横幅と高さを画面いっぱいに広げる
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    
+    //背景色を指定
+    .background(
+            LinearGradient(
+                colors: [Color.blue.opacity(0.3), Color.cyan.opacity(0.8)], // 薄い青〜水色
+                startPoint: .topLeading,    // 左上から
+                endPoint: .bottomTrailing   // 右下へ
+            )
+        )
 }

@@ -10,7 +10,18 @@ import RealityKit
 
 struct ContentView : View {
 
+    //歩数の箱
+        @State var crrentSteps: Int = 8
+    
     var body: some View {
+        
+        VStack {
+                Spacer()//レイアウト調整
+                GlassDropView(stepCount: crrentSteps)//雫を呼び出して表示
+                Spacer()
+                Text("現在の歩数: \(crrentSteps) 歩")
+        }
+        
         RealityView { content in
 
             // Create a cube model
