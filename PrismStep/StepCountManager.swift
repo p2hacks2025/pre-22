@@ -6,3 +6,4 @@
 //
 
 import Foundation
+import HealthKit//ヘルスケアのデータを使うためにインポート
