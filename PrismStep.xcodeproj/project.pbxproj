@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		F58C47FE2EF0282E004C81BB /* GlassDropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58C47FD2EF0282E004C81BB /* GlassDropView.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		F58C47E12EEE65E7004C81BB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -31,7 +27,6 @@
 		F58C47D32EEE65E6004C81BB /* PrismStep.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrismStep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F58C47E02EEE65E7004C81BB /* PrismStepTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrismStepTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F58C47EA2EEE65E7004C81BB /* PrismStepUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrismStepUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F58C47FD2EF0282E004C81BB /* GlassDropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassDropView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -80,7 +75,6 @@
 		F58C47CA2EEE65E6004C81BB = {
 			isa = PBXGroup;
 			children = (
-				F58C47FD2EF0282E004C81BB /* GlassDropView.swift */,
 				F58C47D52EEE65E6004C81BB /* PrismStep */,
 				F58C47E32EEE65E7004C81BB /* PrismStepTests */,
 				F58C47ED2EEE65E7004C81BB /* PrismStepUITests */,
@@ -242,7 +236,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F58C47FE2EF0282E004C81BB /* GlassDropView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
