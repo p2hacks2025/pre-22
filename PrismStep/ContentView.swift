@@ -10,8 +10,11 @@ import RealityKit
 
 struct ContentView : View {
     
+    // インスタンス化（ここで自動的に許可リクエストとデータ取得が走ります）
+       @StateObject var stepManager = StepCountManager()
+    
     //歩数の箱
-    @State var currentSteps: Int = 4000
+   // @State var currentSteps: Int = 4000
     
     var body: some View {
         
@@ -21,6 +24,9 @@ struct ContentView : View {
          Spacer()
          Text("現在の歩数: \(currentSteps) 歩")
          }*/
+        // 歩数の表示
+            //Text("\(stepManager.todaySteps) 歩")
+
         ZStack{
             
             RealityView { content in//カメラ画面
@@ -54,12 +60,12 @@ struct ContentView : View {
                         .ignoresSafeArea()
                     
                     // 雫を表示
-                    GlassDropView(stepCount: currentSteps)
+                    GlassDropView(stepCount: stepManager.todaySteps)
                     
                     // 歩数テキスト
                     VStack {
                         Spacer()
-                        Text("\(currentSteps) 歩")
+                        Text("\(stepManager.todaySteps) 歩")
                             .font(.system(size: 40))
                             .foregroundColor(.white)
                             .padding(.bottom, 50) // タブバーに被らないように少し上げる
