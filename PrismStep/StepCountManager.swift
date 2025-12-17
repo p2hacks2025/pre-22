@@ -11,7 +11,8 @@ import Combine
 
 class StepCountManager: ObservableObject {
     let healthStore = HKHealthStore()//データをアクセスするためのAppleが用意した道具
-    
+    //.stepCountを使うことで歩数専用の型情報を取得し、「HKQuantityType」というクラスに渡してる。.stepCountはシステム定義値なので絶対に値があるという宣言を意味する!をつける
+    let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!//検索対象を歩数に限定する。クラス内全体で使えるように、ここで宣言。
     // 取得した歩数（画面側から監視できるように @Published をつける）
     //歩数は変わるから、変数であるvarを使う
     @Published var todaySteps: Int = 0
@@ -20,9 +21,7 @@ class StepCountManager: ObservableObject {
         requestAuthorization()//許可を求める
     }
     func requestAuthorization() {
-        //.stepCountを使うことで歩数専用の型情報を取得し、「HKQuantityType」というクラスに渡してる。.stepCountはシステム定義値なので絶対に値があるという宣言を意味する!をつける
-        let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
-        let readTypes: Set = [stepType]//APIに渡すために、データの型を集合（Set）に変換している
+        let readTypes: Set = [stepType]
         //toShareは書き込み権限、readは読み込み権限で：の後のやつをそれぞれ渡してる（）
         healthStore.requestAuthorization(toShare: nil, read: readTypes) { success, error in
             if success {
@@ -36,8 +35,6 @@ class StepCountManager: ObservableObject {
     }
     //今日の0時0分から現在時刻までの歩数を合計して、todaySteps 変数に入れる処理を行う関数
     func fetchTodaySteps(){
-        //検索対象を歩数に限定
-        let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
         //「今日の0時0分」から「今」までの期間を設定
         let now = Date()//現在時刻
         let startOfDay = Calendar.current.startOfDay(for: now)
