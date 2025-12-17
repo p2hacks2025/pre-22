@@ -21,7 +21,7 @@ class StepCountManager: ObservableObject {
         requestAuthorization()//許可を求める
     }
     func requestAuthorization() {
-        let readTypes: Set = [stepType]
+        let readTypes: Set = [stepType]//APIに渡すために、データの型を集合（Set）に変換している
         //toShareは書き込み権限、readは読み込み権限で：の後のやつをそれぞれ渡してる（）
         healthStore.requestAuthorization(toShare: nil, read: readTypes) { success, error in
             if success {
