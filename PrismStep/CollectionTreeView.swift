@@ -29,9 +29,9 @@ struct CollectionTreeView: View {
                     content.add(treeEntity)
                     // 位置と大きさの調整
                     // [左右(x), 上下(y), 奥行き(z)]
-                    treeEntity.position = [0, -0.5, -2.0] // 足元、2メートル奥
+                    treeEntity.position = [0, -2.0, -3.0] // 足元、2メートル奥
                     // 大きさ（最初は小さくしてみる）
-                    treeEntity.scale = [0.05, 0.05, 0.05]
+                    treeEntity.scale = [0.01, 0.01, 0.01]
                     // 5. ライト（照明）を追加（これがないと真っ暗になることがある）
                     let light = DirectionalLight()
                     light.light.intensity = 1000 // 明るさ
