@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A2EC79CE2EF4120F00396180 /* Tree.usdz in Resources */ = {isa = PBXBuildFile; fileRef = A2EC79CD2EF4120F00396180 /* Tree.usdz */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F58C47E12EEE65E7004C81BB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A2EC79CD2EF4120F00396180 /* Tree.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = Tree.usdz; sourceTree = "<group>"; };
 		F58C47D32EEE65E6004C81BB /* PrismStep.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrismStep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F58C47E02EEE65E7004C81BB /* PrismStepTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrismStepTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F58C47EA2EEE65E7004C81BB /* PrismStepUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrismStepUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,9 +77,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A2EC79CC2EF4113800396180 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A2EC79CD2EF4120F00396180 /* Tree.usdz */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		F58C47CA2EEE65E6004C81BB = {
 			isa = PBXGroup;
 			children = (
+				A2EC79CC2EF4113800396180 /* Models */,
 				F58C47D52EEE65E6004C81BB /* PrismStep */,
 				F58C47E32EEE65E7004C81BB /* PrismStepTests */,
 				F58C47ED2EEE65E7004C81BB /* PrismStepUITests */,
@@ -212,6 +226,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2EC79CE2EF4120F00396180 /* Tree.usdz in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
