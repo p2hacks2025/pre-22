@@ -16,6 +16,8 @@ struct ContentView : View {
     // 表示管理用の変数を追加
         @State var isShowingResult = false
     
+    @State var sunAngle: Double = -45.0 
+    
     //歩数の箱
    // @State var currentSteps: Int = 4000
     
@@ -62,8 +64,15 @@ struct ContentView : View {
                     LinearGradient(colors: [.blue.opacity(0.3), .cyan.opacity(0.8)], startPoint: .top, endPoint: .bottom)
                         .ignoresSafeArea()
                     
+                    // 太陽スライダー（上部に配置）
+                    VStack {
+                        SunSliderView(sunAngle: $sunAngle) // ここで角度を変える
+                            .padding(.top, 50)
+                        Spacer()
+                    }
                     // 雫を表示
-                    GlassDropView(stepCount: stepManager.todaySteps)
+                    GlassDropView(stepCount: stepManager.todaySteps,
+                                  sunAngle: sunAngle)
                     
                     // 歩数テキスト
                     VStack {
