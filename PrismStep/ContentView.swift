@@ -13,6 +13,9 @@ struct ContentView : View {
     // インスタンス化（ここで自動的に許可リクエストとデータ取得が走ります）
        @StateObject var stepManager = StepCountManager()
     
+    // 表示管理用の変数を追加
+        @State var isShowingResult = false
+    
     //歩数の箱
    // @State var currentSteps: Int = 4000
     
@@ -68,7 +71,7 @@ struct ContentView : View {
                         Text("\(stepManager.todaySteps) 歩")
                             .font(.system(size: 40))
                             .foregroundColor(.white)
-                            .padding(.bottom, 50) // タブバーに被らないように少し上げる
+                            .padding(.bottom, 150) // タブバーに被らないように少し上げる
                     }
                 }
                 .tabItem {
@@ -85,6 +88,34 @@ struct ContentView : View {
             }
             // タブバーの文字色などを変えたい場合はここに追加設定する
             .tint(.blue) // 選択されているアイコンの色
+            
+            VStack {
+                            Spacer()
+                            
+                            Button(action: {//「今日を樹録する」ボタン
+                                isShowingResult = true//ボタンを押したらスイッチON
+                            }) {
+                                Text("今日を樹録する")
+                                    .font(.title3)
+                                    .bold()
+                                    .foregroundColor(.white)
+                                    .padding(.vertical, 15)
+                                    .padding(.horizontal, 40)
+                                    .background(Color(red: 0.85, green: 0.65, blue: 0.3)) // 黄土色
+                                    .cornerRadius(30)
+                                    .shadow(radius: 5)
+                            }
+                            .padding(.bottom, 120) // タブバーに被らない位置
+                        }
+            
+            if isShowingResult {
+                           ResultDialogView(closeAction: {
+                               isShowingResult = false//閉じるアクションが呼ばれたらスイッチOFF
+                           })
+                           .transition(.opacity) // ふわっと表示
+                           .zIndex(1)//最前面に表示
+                       }
+            
         }
     }
 }
