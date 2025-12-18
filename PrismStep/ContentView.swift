@@ -89,7 +89,7 @@ struct ContentView : View {
             // タブバーの文字色などを変えたい場合はここに追加設定する
             .tint(.blue) // 選択されているアイコンの色
             
-            VStack {
+            VStack {//ボタンの配置
                             Spacer()
                             
                             Button(action: {//「今日を樹録する」ボタン
