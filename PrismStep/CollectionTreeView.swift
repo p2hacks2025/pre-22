@@ -15,12 +15,12 @@ struct CollectionTreeView: View {
             Color.green.opacity(0.2)
                 .ignoresSafeArea()
             
-            VStack {
-                Text("🌲")
-                    .font(.system(size: 100))
-                Text("集めたアイテムを表示する木の画面")
-                    .font(.title)
-            }
+            //            VStack {
+            //                Text("🌲")
+            //                    .font(.system(size: 100))
+            //                Text("集めたアイテムを表示する木の画面")
+            //                    .font(.title)
+            //            }
             //3Dを表示するエリア
             RealityView{ content in
                 //try?にすると失敗した時にクラッシュしないで、空っぽを返してくれる。Treeというなのファイルを探してくれる
@@ -31,12 +31,12 @@ struct CollectionTreeView: View {
                     // [左右(x), 上下(y), 奥行き(z)]
                     treeEntity.position = [0, -0.5, -2.0] // 足元、2メートル奥
                     // 大きさ（最初は小さくしてみる）
-                                        treeEntity.scale = [0.05, 0.05, 0.05]
+                    treeEntity.scale = [0.05, 0.05, 0.05]
                     // 5. ライト（照明）を追加（これがないと真っ暗になることがある）
-                                        let light = DirectionalLight()
-                                        light.light.intensity = 1000 // 明るさ
-                                        light.look(at: [0,0,0], from: [2, 5, 2], relativeTo: nil)
-                                        content.add(light)
+                    let light = DirectionalLight()
+                    light.light.intensity = 1000 // 明るさ
+                    light.look(at: [0,0,0], from: [2, 5, 2], relativeTo: nil)
+                    content.add(light)
                 }else {
                     print("エラー：木のモデルが見つかりません。ファイル名を確認してください！")
                 }
