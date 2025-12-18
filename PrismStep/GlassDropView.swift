@@ -37,6 +37,7 @@ struct GlassDropView: View {
         // ▼▼▼ 1. ここで光の位置を計算 ▼▼▼
         // 太陽の角度(-45〜45)を、画面上の比率(0.0〜1.0)に変換
         // -45度なら0.0(左端)、0度なら0.5(真ん中)、45度なら1.0(右端)
+        //スライダーの数字を画面上の位置に翻訳している。
         let lightPositionX = 0.5 + (sunAngle / 90)
         
         ZStack{
@@ -45,23 +46,30 @@ struct GlassDropView: View {
                 .fill(.white.opacity(0.1))//透明度10%
                 .background(.ultraThinMaterial)//すりガラス
                 .mask(Circle())//丸く切り抜く
-            
+            //---2層目：光の反射レイヤー---
             Circle()
                 .fill(
                     LinearGradient(
-                        // 上（太陽側）は白く強く光り、下に向かって消えていく色
-                        colors: [.white.opacity(0.6), .clear],
-                        // ★ここが動く！ スタート地点を太陽の向きに合わせる
+                        colors: [.white.opacity(0.8), .clear] ,//白から透明へのグラデーション
+                        
+                        // スタート地点
+                        //計算した太陽の位置を使う
                         startPoint: UnitPoint(x: lightPositionX, y: 0),
-                        endPoint: .bottom
+                        
+                        //ゴール地点
+                        //光が「入り口」から「中心」に向かって斜めに差し込むように
+                        endPoint: UnitPoint(x: 0.5, y: 0.8)
                     )
                 )
-            
-            //---3層目：縁の光と全体の発光---
+                        
+            // ---3層目：強力発光モード---
             Circle()
-                .stroke(.white.opacity(0.5), lineWidth: 1)
-            // 全体の発光（shadowは外側につくので一番外の層につけるのが良い）
-                .shadow(color: .white.opacity(0.8), radius: 10)
+                // 線を少し太くして、完全に白くする
+                .stroke(.white, lineWidth: 2)
+                // 1段目：ビームのような強い光
+                .shadow(color: .white, radius: 5)
+                // 2段目：周りに広がるオーラのような光
+                .shadow(color: .white.opacity(0.8), radius: 30)
             
             
         }
