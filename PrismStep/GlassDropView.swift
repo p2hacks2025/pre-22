@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RealityKit
 
 struct GlassDropView: View {
     
@@ -46,39 +47,63 @@ struct GlassDropView: View {
         //スライダーの数字を画面上の位置に翻訳している。
         let lightPositionX = 0.5 + (sunAngle / 90)
         
-        ZStack{
-            // ---1層目：ベースのすりガラス---
-            Circle()
-                .fill(.white.opacity(0.1))//透明度10%
-                .background(.ultraThinMaterial)//すりガラス
-                .mask(Circle())//丸く切り抜く
-            //---2層目：光の反射レイヤー---
-            Circle()
-                .fill(
-                    LinearGradient(
-                        colors: [.white.opacity(0.8), .clear] ,//白から透明へのグラデーション
+        ZStack {
+                    
+                    // ▼▼▼ 【追加】0層目：カメラ映像（ここが新入り！） ▼▼▼
+                    RealityView { content in
+                        // カメラに映る3Dオブジェクトの設定（今回は箱を置く設定のままにします）
+                        let model = Entity()
+                        let mesh = MeshResource.generateBox(size: 0.1, cornerRadius: 0.005)
+                        let material = SimpleMaterial(color: .gray, roughness: 0.15, isMetallic: true)
+                        model.components.set(ModelComponent(mesh: mesh, materials: [material]))
+                        model.position = [0, 0.05, 0]
                         
-                        // スタート地点
-                        //計算した太陽の位置を使う
-                        startPoint: UnitPoint(x: lightPositionX, y: 0),
+                        let anchor = AnchorEntity(.plane(.horizontal, classification: .any, minimumBounds: .zero))
+                        anchor.addChild(model)
+                        content.add(anchor)
                         
-                        //ゴール地点
-                        //光が「入り口」から「中心」に向かって斜めに差し込むように
-                        endPoint: UnitPoint(x: 0.5, y: 0.8)
-                    )
-                )
+                        // カメラを現実に連動させる設定
+                        content.camera = .spatialTracking
+                    }
+                    .clipShape(Circle()) // ★超重要：カメラ映像を「丸」に切り抜く
+                    .opacity(0.9)//カメラ映像自体を少し暗くする（上の反射を目立たせるため）
+                    
+                    
+                    // ▼▼▼ 【変更】1層目：ベース（透明度を上げて中を見えやすくする） ▼▼▼
+                    Circle()
+                        // 白だと見えにくいので、薄い青にして透明度を下げる
+                        .fill(Color.blue.opacity(0.4))
+                        // .background(.ultraThinMaterial) ← すりガラスだとカメラがぼやけるので、今回は削除しました
+                        
+                        // 元のコードにあったマスクは不要（Circleそのものなので）
             
-            // ---3層目：強力発光モード---
+            // ★ポイント3：さらに「すりガラス」効果をうっすら足すと、液体感がアップ.ボヤけすぎたら3行消す。
             Circle()
-            // 線を少し太くして、完全に白くする
-                .stroke(.white, lineWidth: 2)
-            // 1段目：ビームのような強い光
-                .shadow(color: .white, radius: 5)
-            // 2段目：周りに広がるオーラのような光
-                .shadow(color: .white.opacity(0.8), radius: 30)
-            
-            
-        }
+                .fill(.ultraThinMaterial) // すりガラス素材
+                .opacity(0.3)             // 30%くらいだけかける
+                    
+                    
+                    // ---2層目：光の反射レイヤー（そのまま）---
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [.white.opacity(0.6), .clear], // カメラが見えるように少し薄くしました(0.8→0.5)
+                                startPoint: UnitPoint(x: lightPositionX, y: 0),
+                                endPoint: UnitPoint(x: 0.5, y: 0.8)
+                            )
+                        )
+                    
+            // ▼▼▼ 3層目：輪郭と影（立体感） ▼▼▼
+                        Circle()
+                            // ★ポイント5：枠線を少し太く、半透明の白にして「ガラスの厚み」を出す
+                            .stroke(Color.white.opacity(0.5), lineWidth: 4)
+                            
+                            // 外側の影（ドロップシャドウ）
+                            .shadow(color: .black.opacity(0.2), radius: 10, x: 5, y: 5)
+                            // 内側の発光（ブルーム効果）
+                            .shadow(color: .white.opacity(0.6), radius: 10)
+                    
+                }
         .frame(width:dropSize,height:dropSize)
         
         //ぷるんの魔法
