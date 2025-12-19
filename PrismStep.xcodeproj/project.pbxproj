@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		A2EC79CE2EF4120F00396180 /* Tree.usdz in Resources */ = {isa = PBXBuildFile; fileRef = A2EC79CD2EF4120F00396180 /* Tree.usdz */; };
-		A2EC7A002EF42CBF00396180 /* Flower1.usdz in Resources */ = {isa = PBXBuildFile; fileRef = A2EC79FF2EF42CBF00396180 /* Flower1.usdz */; };
 		A2EC7A022EF42CDB00396180 /* Flower2.usdz in Resources */ = {isa = PBXBuildFile; fileRef = A2EC7A012EF42CDB00396180 /* Flower2.usdz */; };
 		A2EC7A042EF42CFB00396180 /* Flower3.usdz in Resources */ = {isa = PBXBuildFile; fileRef = A2EC7A032EF42CFB00396180 /* Flower3.usdz */; };
+		A2EC7A0C2EF518F000396180 /* Flower1.usdz in Resources */ = {isa = PBXBuildFile; fileRef = A2EC7A0B2EF518F000396180 /* Flower1.usdz */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,9 +32,9 @@
 
 /* Begin PBXFileReference section */
 		A2EC79CD2EF4120F00396180 /* Tree.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = Tree.usdz; sourceTree = "<group>"; };
-		A2EC79FF2EF42CBF00396180 /* Flower1.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = Flower1.usdz; sourceTree = "<group>"; };
 		A2EC7A012EF42CDB00396180 /* Flower2.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = Flower2.usdz; sourceTree = "<group>"; };
 		A2EC7A032EF42CFB00396180 /* Flower3.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = Flower3.usdz; sourceTree = "<group>"; };
+		A2EC7A0B2EF518F000396180 /* Flower1.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = Flower1.usdz; sourceTree = "<group>"; };
 		F58C47D32EEE65E6004C81BB /* PrismStep.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrismStep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F58C47E02EEE65E7004C81BB /* PrismStepTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrismStepTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F58C47EA2EEE65E7004C81BB /* PrismStepUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrismStepUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,9 +87,9 @@
 			isa = PBXGroup;
 			children = (
 				A2EC79CD2EF4120F00396180 /* Tree.usdz */,
-				A2EC79FF2EF42CBF00396180 /* Flower1.usdz */,
 				A2EC7A012EF42CDB00396180 /* Flower2.usdz */,
 				A2EC7A032EF42CFB00396180 /* Flower3.usdz */,
+				A2EC7A0B2EF518F000396180 /* Flower1.usdz */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -235,8 +235,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A2EC7A002EF42CBF00396180 /* Flower1.usdz in Resources */,
 				A2EC7A022EF42CDB00396180 /* Flower2.usdz in Resources */,
+				A2EC7A0C2EF518F000396180 /* Flower1.usdz in Resources */,
 				A2EC79CE2EF4120F00396180 /* Tree.usdz in Resources */,
 				A2EC7A042EF42CFB00396180 /* Flower3.usdz in Resources */,
 			);
