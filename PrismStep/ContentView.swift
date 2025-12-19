@@ -75,24 +75,34 @@ struct ContentView : View {
                                   sunAngle: sunAngle)
                     
                     // 歩数テキスト
-                    VStack {
+                    VStack{
                         Spacer()
-                        Text("\(stepManager.todaySteps) 歩")
-                            .font(.system(size: 40))
-                            .foregroundColor(.white)
-                            .padding(.bottom, 150) // タブバーに被らないように少し上げる
+                        
+                        HStack(alignment: .lastTextBaseline, spacing: 5) {
+                            
+                            // 1. 数字（大きく、細く）
+                            Text("\(stepManager.todaySteps)")
+                                .font(.system(size: 80, weight: .thin, design: .rounded))
+                                .foregroundColor(.white)
+                            
+                            // 2. 単位（小さく、少し太く）
+                            Text("歩")
+                                .font(.system(size: 24, weight: .medium, design: .rounded))
+                                .foregroundColor(.white)
+                        }
+                        .padding(.bottom,140)
                     }
                 }
                 .tabItem {
                     // 下に表示されるアイコンと文字の設定
-                    Label("雫", systemImage: "drop.fill")
+                    Label("雫", systemImage: "drop")
                 }
                 
                 // --- 2枚目の画面（木） ---
                 CollectionTreeView()
                     .tabItem {
                         // 下に表示されるアイコンと文字の設定
-                        Label("木録", systemImage: "leaf.fill")
+                        Label("木録", systemImage: "tree")
                     }
             }
             // タブバーの文字色などを変えたい場合はここに追加設定する
@@ -105,7 +115,7 @@ struct ContentView : View {
                                 isShowingResult = true//ボタンを押したらスイッチON
                             }) {
                                 Text("今日を樹録する")
-                                    .font(.title3)
+                                    .font(.system(.title3, design: .rounded))
                                     .bold()
                                     .foregroundColor(.white)
                                     .padding(.vertical, 15)
