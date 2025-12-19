@@ -25,14 +25,12 @@ struct CollectionTreeView: View {
             RealityView{ content in
                 //try?にすると失敗した時にクラッシュしないで、空っぽを返してくれる。Treeというなのファイルを探してくれる
                 if let treeEntity = try? Entity.load(named:"Tree"){
+                    // ★調整係（Configurator）を呼び出す
+                    //ここでクリスタル化・サイズ・位置調整が全部適用されます
+                    TreeModelConfigurator.configure(model: treeEntity)
                     // 画面に追加する
                     content.add(treeEntity)
-                    // 位置と大きさの調整
-                    // [左右(x), 上下(y), 奥行き(z)]
-                    treeEntity.position = [0, -2.0, -3.0] // 足元、2メートル奥
-                    // 大きさ（最初は小さくしてみる）
-                    treeEntity.scale = [0.01, 0.01, 0.01]
-                    // 5. ライト（照明）を追加（これがないと真っ暗になることがある）
+                    //ライト（照明）を追加（これがないと真っ暗になることがある）
                     let light = DirectionalLight()
                     light.light.intensity = 1000 // 明るさ
                     light.look(at: [0,0,0], from: [2, 5, 2], relativeTo: nil)
