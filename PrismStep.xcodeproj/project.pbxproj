@@ -428,6 +428,7 @@
 				DEVELOPMENT_TEAM = 2PQCQ83U4B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = CAMERA_USAGE_DESCRIPTION;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "雫を育てるために、歩数を取得します。";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -464,6 +465,7 @@
 				DEVELOPMENT_TEAM = 2PQCQ83U4B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = CAMERA_USAGE_DESCRIPTION;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "雫を育てるために、歩数を取得します。";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

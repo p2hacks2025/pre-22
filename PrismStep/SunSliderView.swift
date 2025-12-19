@@ -42,14 +42,15 @@ struct SunSliderView: View {
                 
                 // 2. 太陽（動かせるつまみ）
                 // 太陽の色（落ち着いた黄金色 #E0AC4F）を定義
-                let sunColor = Color(red: 224/255, green: 172/255, blue: 79/255)
+                let sunColor = Color(red: 220/255, green: 165/255, blue: 32/255)
 
-                ZStack {
+                //発光Ver.
+               ZStack {
                     // --- 1層目：外側に広がるやわらかい光（オーラ） ---
                     Circle()
-                        .fill(sunColor.opacity(0.4)) // 薄くする
+                        .fill(sunColor.opacity(0.5)) // 薄くする
                         .frame(width: 90, height: 90) // 本体より大きく
-                        .blur(radius: 20) // 強くぼかす（これが光の表現になります）
+                        .blur(radius: 100) // 強くぼかす（これが光の表現になります）
                     
                     // --- 2層目：本体のすぐ周りの強い光 ---
                     Circle()
@@ -63,7 +64,7 @@ struct SunSliderView: View {
                             // 中心から外側へのグラデーションで立体感を出す
                             RadialGradient(
                                 // 中心は明るいクリーム色、外側は指定の黄金色
-                                colors: [Color.white.opacity(0.3), sunColor],
+                                colors: [ sunColor],
                                 center: .center,
                                 startRadius: 5,  // 中心の明るい部分の範囲
                                 endRadius: 30    // 本体の半径(60の半分)
@@ -71,6 +72,8 @@ struct SunSliderView: View {
                         )
                         .frame(width: 60, height: 60)
                 }
+                
+                
                 
                 //回転で位置を動かす
                     .offset(y: -radius)

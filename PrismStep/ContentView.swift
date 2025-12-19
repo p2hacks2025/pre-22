@@ -62,7 +62,16 @@ struct ContentView : View {
                 // --- 1枚目の画面（雫） ---
                 ZStack {
                     // 背景（水色）
-                    LinearGradient(colors: [.blue.opacity(0.3), .cyan.opacity(0.8)], startPoint: .top, endPoint: .bottom)
+                    LinearGradient(colors: [
+                        // 上：薄い方 (#F4F7F6)
+                        Color(red: 0.9, green: 0.9, blue: 0.9),
+                        
+                        // 下：濃い方 (#5C8694だと色が暗すぎたから調節したよ)
+                        Color(red: 0.27, green: 0.55, blue: 0.7)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                    )
                         .ignoresSafeArea()
                     
                     
@@ -93,7 +102,7 @@ struct ContentView : View {
                                 .font(.system(size: 24, weight: .medium, design: .rounded))
                                 .foregroundColor(.white)
                         }
-                        .padding(.bottom,220)//数字を大きくすると上に上がる
+                        .padding(.bottom,170)//数字を大きくすると上に上がる
                     }
                     
                     VStack {//ボタンの配置
@@ -112,7 +121,7 @@ struct ContentView : View {
                                             .cornerRadius(30)
                                             .shadow(radius: 5)
                                     }
-                                    .padding(.bottom, 140)//  タブバーに被らない位置
+                                    .padding(.bottom, 110)//  タブバーに被らない位置
                                 }
                     
                 }
