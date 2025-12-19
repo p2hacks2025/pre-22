@@ -82,7 +82,7 @@ struct SunSliderView: View {
             .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
         }
         // 太陽が見切れないように余白を取る（よくわからないけど、これがないとレイアウトが崩壊するらしい）
-        .frame(height: 150)
+        .frame(height: 600)
     }
 }
 
