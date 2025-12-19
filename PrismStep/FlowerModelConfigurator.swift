@@ -19,18 +19,20 @@ struct FlowerModelConfigurator {
         switch name {
         case "Flower1":
             // --- Flower1 (蕾) の調整 ---
-            model.scale = SIMD3<Float>(0.093, 0.093, 0.093) // 標準サイズ
-            model.position = SIMD3<Float>(0, -0.1, 0)      // 中心位置
+            // 上下逆さまにする（180度回転）
+            model.orientation = simd_quatf(angle: .pi, axis: [0, 0, 1])
+            model.scale = SIMD3<Float>(0.003, 0.003, 0.003) // 標準サイズ
+            model.position = SIMD3<Float>(0, 0.5, 0)      // 中心位置
             
         case "Flower2":
             // --- Flower2 (小花) の調整 ---
             model.scale = SIMD3<Float>(0.002, 0.002, 0.002)
-            model.position = SIMD3<Float>(0, -0.5, 0)
+            model.position = SIMD3<Float>(0, -0.3, 0)
             
         case "Flower3":
             // --- Flower3 (大花) の調整 ---
             model.scale = SIMD3<Float>(0.005, 0.005, 0.005)
-            model.position = SIMD3<Float>(0, -0.005, 0)
+            model.position = SIMD3<Float>(0, 0.3, 0)
             
         default:
             // 想定外のモデルが来た時用
