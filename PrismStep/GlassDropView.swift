@@ -15,6 +15,9 @@ struct GlassDropView: View {
     // デフォルト値を0にしておくと、プレビューなどが壊れにくいらしい
     var sunAngle: Double = 0
     
+    // ぷるん！のアニメーション用スイッチ
+    @State private var isBouncing = false
+    
     // 歩数に応じて、3段階のサイズを決める
     var dropSize: CGFloat {//CGFloat:座標やサイズを表す時に使う専用の実数型
         switch stepCount {
@@ -61,20 +64,38 @@ struct GlassDropView: View {
                         endPoint: UnitPoint(x: 0.5, y: 0.8)
                     )
                 )
-                        
+            
             // ---3層目：強力発光モード---
             Circle()
-                // 線を少し太くして、完全に白くする
+            // 線を少し太くして、完全に白くする
                 .stroke(.white, lineWidth: 2)
-                // 1段目：ビームのような強い光
+            // 1段目：ビームのような強い光
                 .shadow(color: .white, radius: 5)
-                // 2段目：周りに広がるオーラのような光
+            // 2段目：周りに広がるオーラのような光
                 .shadow(color: .white.opacity(0.8), radius: 30)
             
             
         }
         .frame(width:dropSize,height:dropSize)
         
+        //ぷるんの魔法
+        // ① 形を変える（スイッチONなら：横に伸びて縦に潰れる）
+        .scaleEffect(x: isBouncing ? 1.2 : 1.0, y: isBouncing ? 0.8 : 1.0)
+        
+        // ② アニメーションの種類（バネのような動き）
+        // response: 揺れの速さ, damping: 揺れの止まりにくさ（小さいとボヨヨヨンと長く揺れる）
+        .animation(.spring(response: 0.4, dampingFraction: 0.3, blendDuration: 0), value: isBouncing)
+        
+        // ③ タップされた時の処理
+        .onTapGesture {
+            // 一瞬だけスイッチを入れて、形を変える
+            isBouncing = true
+            
+            // 0.1秒後にスイッチを切って、元の形に戻す（これでボヨンとなる）
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                isBouncing = false
+            }
+        }
     }
 }
 
