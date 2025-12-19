@@ -35,16 +35,46 @@ struct SunSliderView: View {
                     .trim(from: 0.05, to: 0.45) // 円の上半分を少し削ってアーチにする
                     .stroke(//.strokeでCircleの色や太さを調整できる
                         Color.yellow.opacity(0.3),
-                        style: StrokeStyle(lineWidth: 4, lineCap: .round)
+                        style: StrokeStyle(lineWidth: 13, lineCap: .round)
                     )
                     .frame(width: trackWidth, height: trackWidth)
                     .rotationEffect(.degrees(180)) // 山なりにするために回転
                 
                 // 2. 太陽（動かせるつまみ）
-                Circle()
-                    .fill(Color.yellow)
-                    .frame(width: 40, height: 40)
-                    .shadow(color: .orange.opacity(0.5), radius: 10, x: 0, y: 0)
+                // 太陽の色（落ち着いた黄金色 #E0AC4F）を定義
+                let sunColor = Color(red: 220/255, green: 165/255, blue: 32/255)
+
+                //発光Ver.
+               ZStack {
+                    // --- 1層目：外側に広がるやわらかい光（オーラ） ---
+                    Circle()
+                        .fill(sunColor.opacity(0.5)) // 薄くする
+                        .frame(width: 90, height: 90) // 本体より大きく
+                        .blur(radius: 100) // 強くぼかす（これが光の表現になります）
+                    
+                    // --- 2層目：本体のすぐ周りの強い光 ---
+                    Circle()
+                        .fill(sunColor.opacity(0.6))
+                        .frame(width: 50, height: 50) // 本体より少しだけ大きく
+                        .blur(radius: 10) // ほどよくぼかす
+                    
+                    // --- 3層目：太陽本体 ---
+                    Circle()
+                        .fill(
+                            // 中心から外側へのグラデーションで立体感を出す
+                            RadialGradient(
+                                // 中心は明るいクリーム色、外側は指定の黄金色
+                                colors: [ sunColor],
+                                center: .center,
+                                startRadius: 5,  // 中心の明るい部分の範囲
+                                endRadius: 30    // 本体の半径(60の半分)
+                            )
+                        )
+                        .frame(width: 60, height: 60)
+                }
+                
+                
+                
                 //回転で位置を動かす
                     .offset(y: -radius)
                     .rotationEffect(.degrees(sunAngle)) // 中心を軸に回転させる

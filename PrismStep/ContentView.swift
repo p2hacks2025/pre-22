@@ -16,7 +16,8 @@ struct ContentView : View {
     // 表示管理用の変数を追加
         @State var isShowingResult = false
     
-    @State var sunAngle: Double = -45.0 
+    @State var sunAngle: Double = -45.0
+    
     
     //歩数の箱
    // @State var currentSteps: Int = 4000
@@ -61,61 +62,83 @@ struct ContentView : View {
                 // --- 1枚目の画面（雫） ---
                 ZStack {
                     // 背景（水色）
-                    LinearGradient(colors: [.blue.opacity(0.3), .cyan.opacity(0.8)], startPoint: .top, endPoint: .bottom)
+                    LinearGradient(colors: [
+                        // 上：薄い方 (#F4F7F6)
+                        Color(red: 0.9, green: 0.9, blue: 0.9),
+                        
+                        // 下：濃い方 (#5C8694だと色が暗すぎたから調節したよ)
+                        Color(red: 0.27, green: 0.55, blue: 0.7)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                    )
                         .ignoresSafeArea()
+                    
                     
                     // 太陽スライダー（上部に配置）
                     VStack {
                         SunSliderView(sunAngle: $sunAngle) // ここで角度を変える
-                            .padding(.top, 50)
+                            .padding(.top, 10)//小さくするほど上に
                         Spacer()
                     }
                     // 雫を表示
                     GlassDropView(stepCount: stepManager.todaySteps,
                                   sunAngle: sunAngle)
+                    .offset(y: -90)//数字を大きくすると上にあがる
                     
                     // 歩数テキスト
-                    VStack {
+                    VStack{
                         Spacer()
-                        Text("\(stepManager.todaySteps) 歩")
-                            .font(.system(size: 40))
-                            .foregroundColor(.white)
-                            .padding(.bottom, 150) // タブバーに被らないように少し上げる
+                        
+                        HStack(alignment: .lastTextBaseline, spacing: 5) {
+                            
+                            // 1. 数字（大きく、細く）
+                            Text("\(stepManager.todaySteps)")
+                                .font(.system(size: 80, weight: .thin, design: .rounded))
+                                .foregroundColor(.white)
+                            
+                            // 2. 単位（小さく、少し太く）
+                            Text("歩")
+                                .font(.system(size: 24, weight: .medium, design: .rounded))
+                                .foregroundColor(.white)
+                        }
+                        .padding(.bottom,170)//数字を大きくすると上に上がる
                     }
+                    
+                    VStack {//ボタンの配置
+                                    Spacer()
+                                    
+                                    Button(action: {//「今日を樹録する」ボタン
+                                        isShowingResult = true//ボタンを押したらスイッチON
+                                    }) {
+                                        Text("今日を樹録する")
+                                            .font(.system(.title3, design: .rounded))
+                                            .bold()
+                                            .foregroundColor(.white)
+                                            .padding(.vertical, 15)
+                                            .padding(.horizontal, 40)
+                                            .background(Color(red: 0.85, green: 0.65, blue: 0.3)) // 黄土色
+                                            .cornerRadius(30)
+                                            .shadow(radius: 5)
+                                    }
+                                    .padding(.bottom, 110)//  タブバーに被らない位置
+                                }
+                    
                 }
                 .tabItem {
                     // 下に表示されるアイコンと文字の設定
-                    Label("雫", systemImage: "drop.fill")
+                    Label("雫", systemImage: "drop")
                 }
                 
                 // --- 2枚目の画面（木） ---
                 CollectionTreeView()
                     .tabItem {
                         // 下に表示されるアイコンと文字の設定
-                        Label("木録", systemImage: "leaf.fill")
+                        Label("樹", systemImage: "tree")
                     }
             }
             // タブバーの文字色などを変えたい場合はここに追加設定する
-            .tint(.blue) // 選択されているアイコンの色
-            
-            VStack {//ボタンの配置
-                            Spacer()
-                            
-                            Button(action: {//「今日を樹録する」ボタン
-                                isShowingResult = true//ボタンを押したらスイッチON
-                            }) {
-                                Text("今日を樹録する")
-                                    .font(.title3)
-                                    .bold()
-                                    .foregroundColor(.white)
-                                    .padding(.vertical, 15)
-                                    .padding(.horizontal, 40)
-                                    .background(Color(red: 0.85, green: 0.65, blue: 0.3)) // 黄土色
-                                    .cornerRadius(30)
-                                    .shadow(radius: 5)
-                            }
-                            .padding(.bottom, 120) // タブバーに被らない位置
-                        }
+            .tint(Color(red: 0.87, green: 0.67, blue: 0.3)) // 選択されているアイコンの色
             
             if isShowingResult {
                            ResultDialogView(closeAction: {
