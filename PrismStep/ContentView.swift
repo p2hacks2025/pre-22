@@ -16,7 +16,8 @@ struct ContentView : View {
     // 表示管理用の変数を追加
         @State var isShowingResult = false
     
-    @State var sunAngle: Double = -45.0 
+    @State var sunAngle: Double = -45.0
+    
     
     //歩数の箱
    // @State var currentSteps: Int = 4000
@@ -64,15 +65,17 @@ struct ContentView : View {
                     LinearGradient(colors: [.blue.opacity(0.3), .cyan.opacity(0.8)], startPoint: .top, endPoint: .bottom)
                         .ignoresSafeArea()
                     
+                    
                     // 太陽スライダー（上部に配置）
                     VStack {
                         SunSliderView(sunAngle: $sunAngle) // ここで角度を変える
-                            .padding(.top, 50)
+                            .padding(.top, 10)//小さくするほど上に
                         Spacer()
                     }
                     // 雫を表示
                     GlassDropView(stepCount: stepManager.todaySteps,
                                   sunAngle: sunAngle)
+                    .offset(y: -90)//数字を大きくすると上にあがる
                     
                     // 歩数テキスト
                     VStack{
@@ -90,8 +93,28 @@ struct ContentView : View {
                                 .font(.system(size: 24, weight: .medium, design: .rounded))
                                 .foregroundColor(.white)
                         }
-                        .padding(.bottom,140)
+                        .padding(.bottom,220)//数字を大きくすると上に上がる
                     }
+                    
+                    VStack {//ボタンの配置
+                                    Spacer()
+                                    
+                                    Button(action: {//「今日を樹録する」ボタン
+                                        isShowingResult = true//ボタンを押したらスイッチON
+                                    }) {
+                                        Text("今日を樹録する")
+                                            .font(.system(.title3, design: .rounded))
+                                            .bold()
+                                            .foregroundColor(.white)
+                                            .padding(.vertical, 15)
+                                            .padding(.horizontal, 40)
+                                            .background(Color(red: 0.85, green: 0.65, blue: 0.3)) // 黄土色
+                                            .cornerRadius(30)
+                                            .shadow(radius: 5)
+                                    }
+                                    .padding(.bottom, 140)//  タブバーに被らない位置
+                                }
+                    
                 }
                 .tabItem {
                     // 下に表示されるアイコンと文字の設定
@@ -102,30 +125,11 @@ struct ContentView : View {
                 CollectionTreeView()
                     .tabItem {
                         // 下に表示されるアイコンと文字の設定
-                        Label("木録", systemImage: "tree")
+                        Label("樹", systemImage: "tree")
                     }
             }
             // タブバーの文字色などを変えたい場合はここに追加設定する
-            .tint(.blue) // 選択されているアイコンの色
-            
-            VStack {//ボタンの配置
-                            Spacer()
-                            
-                            Button(action: {//「今日を樹録する」ボタン
-                                isShowingResult = true//ボタンを押したらスイッチON
-                            }) {
-                                Text("今日を樹録する")
-                                    .font(.system(.title3, design: .rounded))
-                                    .bold()
-                                    .foregroundColor(.white)
-                                    .padding(.vertical, 15)
-                                    .padding(.horizontal, 40)
-                                    .background(Color(red: 0.85, green: 0.65, blue: 0.3)) // 黄土色
-                                    .cornerRadius(30)
-                                    .shadow(radius: 5)
-                            }
-                            .padding(.bottom, 120) // タブバーに被らない位置
-                        }
+            .tint(Color(red: 0.87, green: 0.67, blue: 0.3)) // 選択されているアイコンの色
             
             if isShowingResult {
                            ResultDialogView(closeAction: {
