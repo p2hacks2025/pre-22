@@ -18,6 +18,9 @@ struct GlassDropView: View {
     // ぷるん！のアニメーション用スイッチ
     @State private var isBouncing = false
     
+    // どっちに傾くか？の変数
+    @State private var tiltAngle: Double = 0
+    
     // 歩数に応じて、3段階のサイズを決める
     var dropSize: CGFloat {//CGFloat:座標やサイズを表す時に使う専用の実数型
         switch stepCount {
@@ -79,23 +82,47 @@ struct GlassDropView: View {
         .frame(width:dropSize,height:dropSize)
         
         //ぷるんの魔法
-        // ① 形を変える（スイッチONなら：横に伸びて縦に潰れる）
+        // ① 傾ける（タップ位置に合わせて回転）
+        .rotationEffect(.degrees(tiltAngle))
+        
+        // ② 潰す（スイッチONなら変形）
         .scaleEffect(x: isBouncing ? 1.2 : 1.0, y: isBouncing ? 0.8 : 1.0)
         
-        // ② アニメーションの種類（バネのような動き）
-        // response: 揺れの速さ, damping: 揺れの止まりにくさ（小さいとボヨヨヨンと長く揺れる）
+        // ③ アニメーション設定（ボヨンボヨンさせるバネの設定）
         .animation(.spring(response: 0.4, dampingFraction: 0.3, blendDuration: 0), value: isBouncing)
+        .animation(.spring(response: 0.4, dampingFraction: 0.3, blendDuration: 0), value: tiltAngle)
         
-        // ③ タップされた時の処理
-        .onTapGesture {
-            // 一瞬だけスイッチを入れて、形を変える
-            isBouncing = true
-            
-            // 0.1秒後にスイッチを切って、元の形に戻す（これでボヨンとなる）
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                isBouncing = false
-            }
-        }
+        // ④ タップ位置を検知するセンサー
+        .gesture(
+            DragGesture(minimumDistance: 0) // 0にすると「触った瞬間」に反応する
+                .onEnded { value in
+                    // 1. どこを触ったか取得（中心からの距離）
+                    let touchX = value.location.x
+                    let centerX = dropSize / 2
+                    let diff = touchX - centerX // マイナスなら左側、プラスなら右側
+                    
+                    // 2. 位置によって傾きを変える
+                    if diff < -30 {
+                        // 左側を叩いた → 右へ傾く（プラスの角度）
+                        tiltAngle = 100
+                    } else if diff > 30 {
+                        // 右側を叩いた → 左へ傾く（マイナスの角度）
+                        tiltAngle = -100
+                    } else {
+                        // 真ん中あたり → 傾かない
+                        tiltAngle = 100
+                    }
+                    
+                    // 3. 潰れるスイッチON
+                    isBouncing = true
+                    
+                    // 4. 0.1秒後にすべて元に戻す
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        isBouncing = false
+                        tiltAngle = 0 // 傾きも戻す
+                    }
+                }
+        )
     }
 }
 
