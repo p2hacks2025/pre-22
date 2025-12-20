@@ -172,7 +172,7 @@ struct ContentView : View {
             .tint(Color(red: 0.87, green: 0.67, blue: 0.3))
             
             if isShowingResult {
-                ResultDialogView(closeAction: {
+                ResultDialogView(stepCount: stepManager.todaySteps,closeAction: {
                     isShowingResult = false
                 })
                 .transition(.opacity)
