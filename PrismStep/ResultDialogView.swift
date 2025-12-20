@@ -15,6 +15,17 @@ struct ResultDialogView: View {
     // 閉じるボタンが押されたことを、親（ContentView）に伝えるための「スイッチ」
     var closeAction: () -> Void
     
+    // 樹を見に行くボタンが押された時のアクション（後で使う）
+    // 今はとりあえず closeAction と同じ動きをさせておく
+    var navigateToTreeViewAction: () -> Void = {}
+    
+    // 歩数に応じた花の名前とメッセージを決める（）
+    var flowerName: String {
+        if stepCount < 4000 { return "芽" } // 芽
+        else if stepCount < 8000 { return "蕾" } // 蕾
+        else { return "花" } // 花
+    }
+    
     var body: some View {
         ZStack {
             // 1. 背景（画面全体を少し暗くする）
@@ -52,15 +63,45 @@ struct ResultDialogView: View {
                     .frame(height: 250)       // 表示エリアの高さ確保
                     // ※もしモデルが見切れる場合は、scaleを小さくするか、heightを大きくしてください
                 }
+                
+                // 花の名前とメッセージ
+                VStack(spacing: 5) {
+                    Text(flowerName)
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .foregroundColor(Color(red: 0.8, green: 0.6, blue: 0.2)) // 金色
+                    
+                    Text("\(stepCount)歩の努力が\n結晶となりました")
+                        .font(.system(size: 15, design: .rounded))
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                }
                 .padding(.vertical, 10)
                 
-                // 閉じるボタン（画面全体をタップでも閉じれるけど、明示的に置く）
-                /*Button(action: {
-                 closeAction()
-                 }) {
-                 Text("閉じる")
-                 .padding()
-                 }*/
+                // 「樹を見に行く」ボタン
+                Button(action: {
+                    // ここで画面遷移（後で実装）と閉じる処理を行う
+                    navigateToTreeViewAction()
+                    closeAction()
+                }) {
+                    Text("樹を見に行く")
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, 40)
+                        .background(Color(red: 0.85, green: 0.65, blue: 0.3)) // 黄土色
+                        .cornerRadius(30)
+                        .shadow(radius: 3)
+                }
+                
+                // 「閉じる」ボタン（テキストのみ）
+                Button(action: {
+                    closeAction()
+                }) {
+                    Text("閉じる")
+                        .font(.system(size: 16, design: .rounded))
+                        .foregroundColor(.gray)
+                        .padding(.bottom, 20)
+                }
             }
             .frame(width: 300) // カードの幅
             .padding(30)
