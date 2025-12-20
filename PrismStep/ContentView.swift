@@ -15,8 +15,11 @@ struct ContentView : View {
     @State var sunAngle: Double = -45.0
     @State var isARMode = false
     
+    // いま選んでいるタブの番号（0:雫, 1:樹）
+    @State private var selectedTab = 0
+    
     var body: some View {
-        TabView {
+        TabView (selection: $selectedTab){//selection: $selectedTab を追加で「selectedTab」の数字が変わると、勝手に画面も切り替わるようになる
             // --- 1枚目の画面（雫） ---
             ZStack {
                 // 背景のカメラ映像
@@ -53,7 +56,7 @@ struct ContentView : View {
                     Spacer()
                 }
                 
-                // ★2. 雫とボタンを表示
+                // 2. 雫とボタンを表示
                 VStack {
                     // 上の余白
                     Spacer().frame(height: 100)
@@ -98,8 +101,7 @@ struct ContentView : View {
                     
                     Spacer()
                 }
-                
-                //new切り替えボタン
+                //newカメラ切り替えボタン
                 VStack{
                     Spacer()
                     Button(action: {
@@ -157,9 +159,16 @@ struct ContentView : View {
                 }
                 
                 if isShowingResult {
-                    ResultDialogView(stepCount: stepManager.todaySteps,closeAction: {
-                        isShowingResult = false
-                    })
+                    ResultDialogView(
+                        stepCount: stepManager.todaySteps,
+                        closeAction: {
+                            isShowingResult = false
+                        },
+                        // 「樹を見に行く」ボタンが押されたら、タブを「1（樹）」に変える命令を渡します
+                        navigateToTreeViewAction: {
+                            selectedTab = 1
+                        }
+                    )
                     .transition(.opacity)
                     .zIndex(1)
                 }
@@ -167,12 +176,14 @@ struct ContentView : View {
             .tabItem {
                 Label("雫", systemImage: "drop")
             }
+            .tag(0) // この画面は「0番」ですよ、という名札
             
             // --- 2枚目の画面（木） ---
             CollectionTreeView()
                 .tabItem {
                     Label("樹", systemImage: "tree")
                 }
+                .tag(1) // この画面は「1番」ですよ、という名札
         }
         .tint(Color(red: 0.87, green: 0.67, blue: 0.3))
     }
