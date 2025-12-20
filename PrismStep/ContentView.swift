@@ -13,7 +13,7 @@ struct ContentView : View {
     @StateObject var stepManager = StepCountManager()
     @State var isShowingResult = false
     @State var sunAngle: Double = -45.0
-    @State var isARMode = true
+    @State var isARMode = false
     
     var body: some View {
         
@@ -72,24 +72,24 @@ struct ContentView : View {
                             .offset(y: stepManager.todaySteps >= 8000 ? 0 : (stepManager.todaySteps >= 4000 ? 50 : 100))
                             
                             // ② 切り替えボタン
-                           /* Button(action: {
-                                let generator = UIImpactFeedbackGenerator(style: .medium)
-                                generator.impactOccurred()
-                                withAnimation(.easeInOut) {
-                                    isARMode.toggle()
-                                }
-                            }) {
-                                Image(systemName: isARMode ? "camera.fill" : "sparkles")
-                                    .font(.system(size: 18, weight: .bold))
-                                    .foregroundColor(.white)
-                                    .padding(10)
-                                    .background(.ultraThinMaterial)
-                                    .clipShape(Circle())
-                                    .shadow(radius: 3)
-                                    .overlay(
-                                        Circle().stroke(Color.white.opacity(0.3), lineWidth: 1)
-                                    )
-                            }:*/
+                            /* Button(action: {
+                             let generator = UIImpactFeedbackGenerator(style: .medium)
+                             generator.impactOccurred()
+                             withAnimation(.easeInOut) {
+                             isARMode.toggle()
+                             }
+                             }) {
+                             Image(systemName: isARMode ? "camera.fill" : "sparkles")
+                             .font(.system(size: 18, weight: .bold))
+                             .foregroundColor(.white)
+                             .padding(10)
+                             .background(.ultraThinMaterial)
+                             .clipShape(Circle())
+                             .shadow(radius: 3)
+                             .overlay(
+                             Circle().stroke(Color.white.opacity(0.3), lineWidth: 1)
+                             )
+                             }:*/
                             // 変更点②：中心からの位置指定に変更
                             // x:プラスで右へ、y:プラスで下へ移動します
                             // この数字なら、雫が大きくなってもボタンの位置は固定のままです
@@ -111,7 +111,7 @@ struct ContentView : View {
                                 isARMode.toggle()
                             }
                         }) {
-                            Image(systemName: isARMode ? "camera.fill" : "sparkles")
+                            Image(systemName: isARMode ? "sparkles" : "camera.fill")
                                 .font(.system(size: 18, weight: .bold))
                                 .foregroundColor(.white)
                                 .padding(10)
@@ -121,7 +121,7 @@ struct ContentView : View {
                                 .overlay(
                                     Circle().stroke(Color.white.opacity(0.3), lineWidth: 1)
                                 )
-                            }
+                        }
                         .offset(x: 100, y: -240)
                     }
                     
