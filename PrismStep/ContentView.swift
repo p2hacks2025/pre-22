@@ -55,21 +55,24 @@ struct ContentView : View {
                         Spacer()
                     }
                     
-                    // ★2. 雫とボタンを表示（ここを大改造！）
+                    // ★2. 雫とボタンを表示
                     VStack {
                         // 上の余白
                         Spacer().frame(height: 100)
                         
-                        // 雫とボタンを重ねて配置する
-                        ZStack(alignment: .bottomTrailing) { // 右下基準で重ねる
+                        // 変更点①：alignmentを削除（または .center にする）
+                        // これで「中心合わせ」になるので、雫が大きくなっても基準点がズレません
+                        ZStack {
                             
                             // ① 雫（メイン）
                             GlassDropView(stepCount: stepManager.todaySteps,
                                           isARMode: isARMode,
                                           sunAngle: sunAngle)
+                            // 歩数が増えて雫が大きくなったら、その分上に引き上げる
+                            .offset(y: stepManager.todaySteps >= 8000 ? 0 : (stepManager.todaySteps >= 4000 ? 50 : 100))
                             
-                            // ② 切り替えボタン（雫の右下に配置）
-                            Button(action: {
+                            // ② 切り替えボタン
+                           /* Button(action: {
                                 let generator = UIImpactFeedbackGenerator(style: .medium)
                                 generator.impactOccurred()
                                 withAnimation(.easeInOut) {
@@ -86,14 +89,40 @@ struct ContentView : View {
                                     .overlay(
                                         Circle().stroke(Color.white.opacity(0.3), lineWidth: 1)
                                     )
-                            }
-                            // 位置の微調整（雫の右下から、少し外側にずらす）
-                            .offset(x: 40, y: 30)
+                            }:*/
+                            // 変更点②：中心からの位置指定に変更
+                            // x:プラスで右へ、y:プラスで下へ移動します
+                            // この数字なら、雫が大きくなってもボタンの位置は固定のままです
+                            //.offset(x: 80, y: 80)
                         }
                         // 雫全体の位置調整（画面中央より少し下へ）
                         .offset(y: 20)
                         
                         Spacer()
+                    }
+                    
+                    //new切り替えボタン
+                    VStack{
+                        Spacer()
+                        Button(action: {
+                            let generator = UIImpactFeedbackGenerator(style: .medium)
+                            generator.impactOccurred()
+                            withAnimation(.easeInOut) {
+                                isARMode.toggle()
+                            }
+                        }) {
+                            Image(systemName: isARMode ? "camera.fill" : "sparkles")
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding(10)
+                                .background(.ultraThinMaterial)
+                                .clipShape(Circle())
+                                .shadow(radius: 3)
+                                .overlay(
+                                    Circle().stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                )
+                            }
+                        .offset(x: 100, y: -240)
                     }
                     
                     // 3. 歩数テキスト
