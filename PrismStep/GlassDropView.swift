@@ -12,6 +12,9 @@ struct GlassDropView: View {
     
     var stepCount: Int//歩数を受け取る
     
+    // ★追加：カメラモードかどうかを受け取るスイッチ
+        var isARMode: Bool
+    
     // 太陽の角度を受け取る変数
     // デフォルト値を0にしておくと、プレビューなどが壊れにくいらしい
     var sunAngle: Double = 0
@@ -49,38 +52,51 @@ struct GlassDropView: View {
         
         ZStack {
                     
-                    // ▼▼▼ 【追加】0層目：カメラ映像（ここが新入り！） ▼▼▼
-                    RealityView { content in
-                        // カメラに映る3Dオブジェクトの設定（今回は箱を置く設定のままにします）
-                        let model = Entity()
-                        let mesh = MeshResource.generateBox(size: 0.1, cornerRadius: 0.005)
-                        let material = SimpleMaterial(color: .gray, roughness: 0.15, isMetallic: true)
-                        model.components.set(ModelComponent(mesh: mesh, materials: [material]))
-                        model.position = [0, 0.05, 0]
-                        
-                        let anchor = AnchorEntity(.plane(.horizontal, classification: .any, minimumBounds: .zero))
-                        anchor.addChild(model)
-                        content.add(anchor)
-                        
-                        // カメラを現実に連動させる設定
-                        content.camera = .spatialTracking
-                    }
-                    .clipShape(Circle()) // ★超重要：カメラ映像を「丸」に切り抜く
-                    .opacity(0.9)//カメラ映像自体を少し暗くする（上の反射を目立たせるため）
+            // ▼▼▼ ここで「カメラ」か「通常」かを切り替える！ ▼▼▼
+            if isARMode {
+                // 【Aパターン：カメラモード（AR）】
+                
+                // ▼▼▼ 【追加】0層目：カメラ映像（ここが新入り！） ▼▼▼
+                RealityView { content in
+                    // カメラに映る3Dオブジェクトの設定（今回は箱を置く設定のままにします）
+                    let model = Entity()
+                    let mesh = MeshResource.generateBox(size: 0.1, cornerRadius: 0.005)
+                    let material = SimpleMaterial(color: .gray, roughness: 0.15, isMetallic: true)
+                    model.components.set(ModelComponent(mesh: mesh, materials: [material]))
+                    model.position = [0, 0.05, 0]
                     
+                    let anchor = AnchorEntity(.plane(.horizontal, classification: .any, minimumBounds: .zero))
+                    anchor.addChild(model)
+                    content.add(anchor)
                     
-                    // ▼▼▼ 【変更】1層目：ベース（透明度を上げて中を見えやすくする） ▼▼▼
-                    Circle()
-                        // 白だと見えにくいので、薄い青にして透明度を下げる
-                        .fill(Color.blue.opacity(0.4))
+                    // カメラを現実に連動させる設定
+                    content.camera = .spatialTracking
+                }
+                .clipShape(Circle()) // ★超重要：カメラ映像を「丸」に切り抜く
+                .opacity(0.9)//カメラ映像自体を少し暗くする（上の反射を目立たせるため）
+                
+                
+                // ▼▼▼ 【変更】1層目：水のフィルターベース（透明度を上げて中を見えやすくする） ▼▼▼
+                Circle()
+                // 白だと見えにくいので、薄い青にして透明度を下げる
+                    .fill(Color.blue.opacity(0.4))
+            }else {
+                // 【Bパターン：通常の発光モード】
+                // カメラを入れる前の、綺麗なすりガラスのデザインです
+                
+                Circle()
+                    .fill(.white.opacity(0.2)) // 少し白く
+                    .background(.ultraThinMaterial) // すりガラス
+                    .clipShape(Circle())
+            }
                         // .background(.ultraThinMaterial) ← すりガラスだとカメラがぼやけるので、今回は削除しました
                         
                         // 元のコードにあったマスクは不要（Circleそのものなので）
             
-            // ★ポイント3：さらに「すりガラス」効果をうっすら足すと、液体感がアップ.ボヤけすぎたら3行消す。
-            Circle()
+            // //*★ポイント3：さらに「すりガラス」効果をうっすら足すと、液体感がアップ.ボヤけすぎたら3行消す。
+           /* Circle()
                 .fill(.ultraThinMaterial) // すりガラス素材
-                .opacity(0.3)             // 30%くらいだけかける
+                .opacity(0.3)             // 30%くらいだけかける*/
                     
                     
                     // ---2層目：光の反射レイヤー（そのまま）---
@@ -154,11 +170,11 @@ struct GlassDropView: View {
 #Preview {
     VStack(spacing:40){
         // 例：左から光が当たっている状態
-        GlassDropView(stepCount: 500, sunAngle: -30)
+        GlassDropView(stepCount: 500, isARMode: true,sunAngle: -30)
         // 例：正面から光
-        GlassDropView(stepCount: 4500, sunAngle: 0)
+        GlassDropView(stepCount: 4500,isARMode: true, sunAngle: 0)
         // 例：右から光
-        GlassDropView(stepCount: 9000, sunAngle: 30)
+        GlassDropView(stepCount: 9000,isARMode: true, sunAngle: 30)
     }
     .padding()
     
