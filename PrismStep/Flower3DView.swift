@@ -8,127 +8,161 @@
 import SwiftUI
 import RealityKit//3Dモデルを使うのに必要
 
+// -----------------------------------------------------------------------------
+// 1. 回転機能の準備
+// -----------------------------------------------------------------------------
+struct RotationComponent: Component {
+    var speed: Float = 0.02
+}
+
+class RotationSystem: System {
+    required init(scene: RealityKit.Scene) {}
+    
+    func update(context: SceneUpdateContext) {
+        let entities = context.scene.performQuery(EntityQuery(where: .has(RotationComponent.self)))
+        for entity in entities {
+            if let component = entity.components[RotationComponent.self] as? RotationComponent {
+                // Y軸（縦）を中心に回転
+                let rotation = simd_quatf(angle: component.speed, axis: [0, 1, 0])
+                entity.orientation *= rotation
+            }
+        }
+    }
+}
+// -----------------------------------------------------------------------------
+// 回転機能の準備（ここまで）
+// -----------------------------------------------------------------------------
+
+
 struct Flower3DView: View {
     var stepCount: Int//歩数を受け取る
     // 画面ごとに大きさを変えるための倍率（デフォルトは1.0倍）
-        var scale: Float = 1.0
+    var scale: Float = 1.0
+    
+    // 回転スイッチ
+    var isRotating: Bool = false
+    
     // 歩数に応じて、3段階のサイズを決める
-        var flowerModelName: String {//CGFloat:座標やサイズを表す時に使う専用の実数型
-            switch stepCount {
-            case 0..<4000:
-                // 0歩 〜 3999歩（花レベル１）
-                return "Flower1"
-                
-            case 4000..<8000:
-                // 4000歩 〜 7999歩（花レベル２）
-                return "Flower2"
-                
-            default:
-                // 8000歩以上（花レベル３）
-                return "Flower3"
-            }
+    var flowerModelName: String {//CGFloat:座標やサイズを表す時に使う専用の実数型
+        switch stepCount {
+        case 0..<4000:
+            // 0歩 〜 3999歩（花レベル１）
+            return "Flower1"
+            
+        case 4000..<8000:
+            // 4000歩 〜 7999歩（花レベル２）
+            return "Flower2"
+            
+        default:
+            // 8000歩以上（花レベル３）
+            return "Flower3"
         }
+    }
     
     var body: some View {
         RealityView { content in
-                    // 初期化時の処理（空のアンカーを作っておくなど）
-                    let anchor = AnchorEntity()
-                    anchor.name = "FlowerAnchor" // 名前をつけてあとで探せるようにする
-                    content.add(anchor)
+            // 初期化
+            RotationComponent.registerComponent()
+            RotationSystem.registerSystem()
+            
+            let anchor = AnchorEntity()
+            anchor.name = "FlowerAnchor"
+            content.add(anchor)
+            
+            // 回転用の透明な台座
+            let turntable = Entity()
+            turntable.name = "Turntable"
+            anchor.addChild(turntable)
+            
+        } update: { content in
+            
+            guard let anchor = content.entities.first(where: { $0.name == "FlowerAnchor" }),
+                  let turntable = anchor.findEntity(named: "Turntable") else { return }
+            
+            // モデル切り替え処理
+            if turntable.children.isEmpty || turntable.children.first?.name != flowerModelName {
+                
+                turntable.children.removeAll()
+                
+                do {
+                    let newModel = try ModelEntity.load(named: flowerModelName)
+                    newModel.name = flowerModelName
                     
-                } update: { content in
-                    // ★ここが更新ロジック
-                    // 歩数が変わってViewが再描画されるたびに呼ばれます
+                    // 設定ファイルで調整（ここで正しい位置にセットされます）
+                    FlowerModelConfigurator.configure(model: newModel, name: flowerModelName)
                     
-                    guard let anchor = content.entities.first(where: { $0.name == "FlowerAnchor" }) else { return }
-                                
-                                // すでに表示中のモデル名と、表示したい名前が同じなら何もしない
-                                if let currentModel = anchor.children.first, currentModel.name == flowerModelName {
-                                    return
-                                }
-                                
-                                // 一旦クリア
-                                anchor.children.removeAll()
-                                
-                                // ★ここから修正：読み込みテスト用のロジック
-                                do {
-                                    // 1. モデルの読み込みを試みる
-                                    let newModel = try ModelEntity.load(named: flowerModelName)
-                                    newModel.name = flowerModelName
-                                    
-                                    // 設定ファイルで調整
-                                    FlowerModelConfigurator.configure(model: newModel, name: flowerModelName)
-                                    
-                                    // ★重要：倍率を適用
-                                    newModel.scale *= scale
-                                    
-                                    // ★重要：位置を少し「奥」にずらす（Z軸をマイナスにする）
-                                    // これをやらないと、カメラがモデルの中に埋まって何も見えないことがあります
-                                    newModel.position.z = 0.5
-                                    
-                                    anchor.addChild(newModel)
-                                    print("成功: \(flowerModelName) を表示")
-                                    
-                                } catch {
-                                    // 2. もし読み込みに失敗したら「赤い箱」を出す
-                                    // これが出たら、ファイル名かターゲット設定が間違っている証拠です
-                                    print("失敗: \(flowerModelName) が見つかりません。代わりに赤い箱を出します。")
-                                    
-                                    let mesh = MeshResource.generateBox(size: 0.2) // 20cmの箱
-                                    let material = SimpleMaterial(color: .red, isMetallic: false)
-                                    let debugBox = ModelEntity(mesh: mesh, materials: [material])
-                                    
-                                    debugBox.name = flowerModelName
-                                    debugBox.position = SIMD3<Float>(0, 0, -0.5) // 少し奥に置く
-                                    
-                                    anchor.addChild(debugBox)
-                                }
-                                
-                                // 3. ライト（照明）を追加する
-                                // モデルが真っ黒になるのを防ぎます
-                                let light = DirectionalLight()
-                                light.light.intensity = 1000
-                                light.look(at: [0,0,0], from: [1, 1, 1], relativeTo: nil)
-                                anchor.addChild(light)
+                    // 倍率
+                    newModel.scale *= scale
+                    
+                    // ★修正ポイント1：
+                    // 前回ここにあった `newModel.position = ...` を削除しました！
+                    // これで Configurator が設定した「正しい位置（中心位置）」が維持されます。
+                    
+                    // ライト（照明）
+                    let light = DirectionalLight()
+                    light.light.intensity = 1000
+                    light.look(at: [0,0,0], from: [1, 1, 1], relativeTo: nil)
+                    anchor.addChild(light)
+                    
+                    turntable.addChild(newModel)
+                    print("成功: \(flowerModelName) を表示")
+                    
+                } catch {
+                    print("失敗: \(flowerModelName) が見つかりません。")
+                    let mesh = MeshResource.generateBox(size: 0.2)
+                    let material = SimpleMaterial(color: .red, isMetallic: false)
+                    let debugBox = ModelEntity(mesh: mesh, materials: [material])
+                    debugBox.name = flowerModelName
+                    turntable.addChild(debugBox)
                 }
+            }
+            
+            // -----------------------------------------------------------------
+            // 回転スイッチの制御
+            // -----------------------------------------------------------------
+            
+            // ★修正ポイント2：
+            // 「回転する時だけ位置を変える（-0.2など）」という処理も削除しました。
+            // 常に同じ場所（Z=0.5）に固定することで、「元の位置で回る」ようになります。
+            turntable.position = SIMD3<Float>(0, 0, 0.5)
+            
+            if isRotating {
+                // スイッチON: 回転台に目印をつける
+                if !turntable.components.has(RotationComponent.self) {
+                    turntable.components.set(RotationComponent())
+                }
+            } else {
+                // スイッチOFF: 目印を外す（止まる）
+                turntable.components.remove(RotationComponent.self)
+                
+                // 向きを正面にリセット
+                turntable.orientation = simd_quatf(angle: 0, axis: [0, 1, 0])
+            }
+        }
     }
 }
 
+// プレビュー
 #Preview {
     ZStack {
-            // 1. 背景をグレーにして、白い花でも見えるようにする
-            Color.gray.ignoresSafeArea()
+        Color.gray.ignoresSafeArea()
+        VStack(spacing: 50) {
             
-            VStack(spacing: 50) {
-                
-                // 2. 直接数字を入れて、強制的にそれぞれのモデルを表示させる
-                
-                // 0〜3999歩のテスト（Flower1が出るはず）
-                VStack {
-                    Text("テスト: 100歩 (Flower1)")
-                        .foregroundStyle(.white)
-                    Flower3DView(stepCount: 100, scale: 1.0)
-                        .frame(height: 150)
-                        .background(Color.white.opacity(0.2)) // 枠がわかるように薄く色付け
-                }
-                
-                // 4000〜7999歩のテスト（Flower2が出るはず）
-                VStack {
-                    Text("テスト: 5000歩 (Flower2)")
-                        .foregroundStyle(.white)
-                    Flower3DView(stepCount: 5000, scale: 1.0)
-                        .frame(height: 150)
-                        .background(Color.white.opacity(0.2))
-                }
-                
-                // 8000歩以上のテスト（Flower3が出るはず）
-                VStack {
-                    Text("テスト: 10000歩 (Flower3)")
-                        .foregroundStyle(.white)
-                    Flower3DView(stepCount: 10000, scale: 1.0)
-                        .frame(height: 150)
-                        .background(Color.white.opacity(0.2))
-                }
+            VStack {
+                Text("通常モード: 100歩")
+                    .foregroundStyle(.white)
+                Flower3DView(stepCount: 100, scale: 1.0)
+                    .frame(height: 150)
+                    .background(Color.white.opacity(0.2))
+            }
+            
+            VStack {
+                Text("回転モード: 10000歩")
+                    .foregroundStyle(.yellow)
+                Flower3DView(stepCount: 10000, scale: 1.0, isRotating: true)
+                    .frame(height: 150)
+                    .background(Circle().fill(Color.white.opacity(0.1)))
             }
         }
+    }
 }
