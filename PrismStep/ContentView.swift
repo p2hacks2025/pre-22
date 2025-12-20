@@ -18,6 +18,9 @@ struct ContentView : View {
     
     @State var sunAngle: Double = -45.0
     
+    // ★追加：ARモードの切り替えスイッチ（最初はON）
+        @State var isARMode = true
+    
     
     //歩数の箱
    // @State var currentSteps: Int = 4000
@@ -65,7 +68,6 @@ struct ContentView : View {
                     LinearGradient(colors: [
                         // 上：薄い方 (#F4F7F6)
                         Color(red: 0.9, green: 0.9, blue: 0.9),
-                        
                         // 下：濃い方 (#5C8694だと色が暗すぎたから調節したよ)
                         Color(red: 0.27, green: 0.55, blue: 0.7)
                     ],
@@ -75,16 +77,59 @@ struct ContentView : View {
                         .ignoresSafeArea()
                     
                     
-                    // 太陽スライダー（上部に配置）
-                    VStack {
-                        SunSliderView(sunAngle: $sunAngle) // ここで角度を変える
-                            .padding(.top, 10)//小さくするほど上に
-                        Spacer()
-                    }
-                    // 雫を表示
-                    GlassDropView(stepCount: stepManager.todaySteps,
-                                  sunAngle: sunAngle)
-                    .offset(y: -90)//数字を大きくすると上にあがる
+                    // ▼▼▼ レイアウトの変更ここから ▼▼▼
+                                        VStack {
+                                            
+                                            // ★1. ヘッダーエリア（ボタンとスライダー）
+                                            ZStack(alignment: .topTrailing) {
+                                                
+                                                // 真ん中にスライダー
+                                                SunSliderView(sunAngle: $sunAngle)
+                                                    .padding(.top, 10)
+                                                
+                                                // 右上に切り替えボタン
+                                                Button(action: {
+                                                    // ボタンを押した時の動作
+                                                    let generator = UIImpactFeedbackGenerator(style: .medium)
+                                                    generator.impactOccurred() // ブルッとさせる
+                                                    withAnimation(.easeInOut) {
+                                                        isARMode.toggle() // ON/OFF切り替え
+                                                    }
+                                                }) {
+                                                    // アイコンの切り替え
+                                                    Image(systemName: isARMode ? "camera.fill" : "sparkles")
+                                                        .font(.system(size: 20, weight: .bold))
+                                                        .foregroundColor(.white)
+                                                        .padding(12)
+                                                        .background(.ultraThinMaterial) // すりガラス背景
+                                                        .clipShape(Circle())
+                                                        .shadow(radius: 5)
+                                                        // シャボン玉のような枠線
+                                                        .overlay(
+                                                            Circle().stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                                        )
+                                                }
+                                                .padding(.trailing, 20) // 右端からの隙間
+                                                .padding(.top, 20)      // 上からの隙間
+                                            }
+                                            
+                                            Spacer()
+                                        }
+                                        
+                                        // ★2. 雫を表示（引数を追加！）
+                                        VStack {
+                                            // 少し余白を入れて位置調整
+                                             Spacer().frame(height: 100)
+                                            
+                                            // ★ここがエラーの原因だった場所です！
+                                            // isARMode: isARMode を追加したことでエラーが消えます
+                                            GlassDropView(stepCount: stepManager.todaySteps,
+                                                          isARMode: isARMode,
+                                                          sunAngle: sunAngle)
+                                            .offset(y: -90)
+                                            
+                                            Spacer()
+                                        }
                     
                     // 歩数テキスト
                     VStack{
