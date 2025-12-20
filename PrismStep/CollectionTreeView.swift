@@ -9,7 +9,17 @@ import SwiftUI
 import RealityKit
 
 struct CollectionTreeView: View {
+    
+    // 親から受け取るリスト
+    var flowers: [CollectedFlower]
+    
+    // グリッドのレイアウト設定（小さめのアイコンを並べる）
+    let columns = [
+        GridItem(.adaptive(minimum: 150)) // 幅80くらいのアイテムを詰め込む
+    ]
+    
     var body: some View {
+        
         ZStack {
             // 背景色（とりあえず緑）
             Color.green.opacity(0.2)
@@ -39,10 +49,50 @@ struct CollectionTreeView: View {
                     print("エラー：木のモデルが見つかりません。ファイル名を確認してください！")
                 }
             }
+            
+            // ▼▼▼ 2. 手前：獲得したアイテムリスト（左上に表示） ▼▼▼
+            //VStack(alignment: .leading) { // 左寄せ
+            
+            if !flowers.isEmpty {
+                
+                // スクロールできるエリア
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 15) {
+                        
+                        // リストの中身を一個ずつ取り出して表示
+                        ForEach(flowers) { flower in
+                            // 小さい3Dの花を表示
+                            Flower3DView(stepCount: flower.stepCount, scale: 1.8, isRotating: true)
+                                .frame(width: 100, height: 100)
+                            // yをプラスにすると下へ、マイナスにすると上へ動きます
+                                .offset(x:-20,y: -120)
+                            //.background(Material.ultraThin) // すりガラス風の丸背景（個別に適用）
+                            //.clipShape(Circle())
+                            //.shadow(radius: 5)
+                            
+                        }
+                    }
+                    .padding()
+                    // ★ここを追加！数字を大きくするほど下に下がります
+                    .padding(.top, 300)
+                }
+                // .frame(maxHeight: 200) // リストの高さ（画面全体を埋めないように制限）
+                
+                // .padding()
+            }
+            
+            Spacer() // 残りのスペースを空けて、リストを上に押しやる
         }
+        // 画面の幅いっぱいに広げて、左上（topLeading）に寄せる
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }
 
+
 #Preview {
-    CollectionTreeView()
+    CollectionTreeView(flowers: [
+        CollectedFlower(stepCount: 3000), // 芽
+        CollectedFlower(stepCount: 8500), // 花
+        CollectedFlower(stepCount: 5000)  // 蕾
+    ])
 }

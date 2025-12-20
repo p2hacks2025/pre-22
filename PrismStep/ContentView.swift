@@ -18,6 +18,9 @@ struct ContentView : View {
     // いま選んでいるタブの番号（0:雫, 1:樹）
     @State private var selectedTab = 0
     
+    // 獲得した花を入れる（リスト）
+        @State private var myFlowers: [CollectedFlower] = []
+    
     var body: some View {
         TabView (selection: $selectedTab){//selection: $selectedTab を追加で「selectedTab」の数字が変わると、勝手に画面も切り替わるようになる
             // --- 1枚目の画面（雫） ---
@@ -166,6 +169,8 @@ struct ContentView : View {
                         },
                         // 「樹を見に行く」ボタンが押されたら、タブを「1（樹）」に変える命令を渡します
                         navigateToTreeViewAction: {
+                            let newFlower = CollectedFlower(stepCount: stepManager.todaySteps)
+                                                        myFlowers.append(newFlower)
                             selectedTab = 1
                         }
                     )
@@ -179,7 +184,7 @@ struct ContentView : View {
             .tag(0) // この画面は「0番」ですよ、という名札
             
             // --- 2枚目の画面（木） ---
-            CollectionTreeView()
+            CollectionTreeView(flowers: myFlowers)
                 .tabItem {
                     Label("樹", systemImage: "tree")
                 }
@@ -187,6 +192,12 @@ struct ContentView : View {
         }
         .tint(Color(red: 0.87, green: 0.67, blue: 0.3))
     }
+}
+
+// 獲得した花のデータ
+struct CollectedFlower: Identifiable {
+    let id = UUID()      // ID（これがないとSwiftUIが区別できない）
+    let stepCount: Int   // 何歩で手に入れたか（これで花の種類を決める）
 }
 
 #Preview {
